@@ -13,10 +13,17 @@ struct node {
     struct node *next;
 };
 
+struct list {
+    struct node *head;
+};
+
 // Function Declarations
 int sumNodesWhile(struct node *list);
 int sumNodesFor(struct node *list);
 struct node *deleteFirstInstance(struct node *list, int value);
+void deleteFirstInstanceWrapper(struct list *list, int value);
+
+// Helper functions
 struct node *createNode(int value);
 struct node *prependNode(int value, struct node *list);
 void freeList(struct node *list);
@@ -42,6 +49,15 @@ static void test_deleteLast(void);
 static void test_deleteNonExistent(void);
 static void test_deleteFirstOccurrence(void);
 static void test_deleteSingleNode(void);
+
+// Wrapper Delete First Instance Test Cases
+static void test_wrapperDeleteFromEmptyList(void);
+static void test_wrapperDeleteHead(void);
+static void test_wrapperDeleteMiddle(void);
+static void test_wrapperDeleteLast(void);
+static void test_wrapperDeleteNonExistent(void);
+static void test_wrapperDeleteFirstOccurrence(void);
+static void test_wrapperDeleteSingleNode(void);
 
 // Helper to run tests
 static void run_tests(void);
@@ -260,6 +276,120 @@ static void test_deleteSingleNode(void) {
 }
 
 // -----------------------------------------------------------------------------
+// Test Cases for deleteFirstInstanceWrapper()
+// -----------------------------------------------------------------------------
+
+// Test 1: Delete from empty list using wrapper
+static void test_wrapperDeleteFromEmptyList(void) {
+    print_test_suite_header("Wrapper Delete from Empty List");
+    struct list list_struct = { .head = NULL };
+    deleteFirstInstanceWrapper(&list_struct, 5);
+    bool condition = checkListStructure(list_struct.head, NULL, 0);
+    run_test("wrapper delete from empty list", condition);
+}
+
+// Test 2: Delete head node using wrapper
+static void test_wrapperDeleteHead(void) {
+    print_test_suite_header("Wrapper Delete Head Node");
+    struct list list_struct;
+    list_struct.head = NULL;
+    list_struct.head = prependNode(1, list_struct.head);
+    list_struct.head = prependNode(2, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head); // 3 -> 2 -> 1
+    deleteFirstInstanceWrapper(&list_struct, 3);
+    int expected[] = {2, 1};
+    bool structureOk = checkListStructure(list_struct.head, expected, 2);
+    int sum = sumNodesWhile(list_struct.head);
+    bool sumOk = (sum == 3);
+    run_test("wrapper structure after deleting head", structureOk);
+    run_test("wrapper sum after deleting head", sumOk);
+    freeList(list_struct.head);
+}
+
+// Test 3: Delete middle node using wrapper
+static void test_wrapperDeleteMiddle(void) {
+    print_test_suite_header("Wrapper Delete Middle Node");
+    struct list list_struct;
+    list_struct.head = NULL;
+    list_struct.head = prependNode(1, list_struct.head);
+    list_struct.head = prependNode(2, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head); // 3 -> 2 -> 1
+    deleteFirstInstanceWrapper(&list_struct, 2);
+    int expected[] = {3, 1};
+    bool structureOk = checkListStructure(list_struct.head, expected, 2);
+    int sum = sumNodesWhile(list_struct.head);
+    bool sumOk = (sum == 4);
+    run_test("wrapper structure after deleting middle", structureOk);
+    run_test("wrapper sum after deleting middle", sumOk);
+    freeList(list_struct.head);
+}
+
+// Test 4: Delete last node using wrapper
+static void test_wrapperDeleteLast(void) {
+    print_test_suite_header("Wrapper Delete Last Node");
+    struct list list_struct;
+    list_struct.head = NULL;
+    list_struct.head = prependNode(1, list_struct.head);
+    list_struct.head = prependNode(2, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head); // 3 -> 2 -> 1
+    deleteFirstInstanceWrapper(&list_struct, 1);
+    int expected[] = {3, 2};
+    bool structureOk = checkListStructure(list_struct.head, expected, 2);
+    int sum = sumNodesWhile(list_struct.head);
+    bool sumOk = (sum == 5);
+    run_test("wrapper structure after deleting last", structureOk);
+    run_test("wrapper sum after deleting last", sumOk);
+    freeList(list_struct.head);
+}
+
+// Test 5: Delete non-existent value using wrapper
+static void test_wrapperDeleteNonExistent(void) {
+    print_test_suite_header("Wrapper Delete Non-Existent Value");
+    struct list list_struct;
+    list_struct.head = NULL;
+    list_struct.head = prependNode(1, list_struct.head);
+    list_struct.head = prependNode(2, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head); // 3 -> 2 -> 1
+    struct node *original = list_struct.head;
+    deleteFirstInstanceWrapper(&list_struct, 4);
+    int expected[] = {3, 2, 1};
+    bool structureOk = checkListStructure(list_struct.head, expected, 3);
+    bool sameAddress = (list_struct.head == original);
+    run_test("wrapper structure unchanged", structureOk);
+    run_test("wrapper list pointer unchanged", sameAddress);
+    freeList(list_struct.head);
+}
+
+// Test 6: Delete first occurrence in duplicates using wrapper
+static void test_wrapperDeleteFirstOccurrence(void) {
+    print_test_suite_header("Wrapper Delete First Occurrence");
+    struct list list_struct;
+    list_struct.head = NULL;
+    list_struct.head = prependNode(2, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head);
+    list_struct.head = prependNode(3, list_struct.head); // 3 -> 3 -> 2
+    deleteFirstInstanceWrapper(&list_struct, 3);
+    int expected[] = {3, 2};
+    bool structureOk = checkListStructure(list_struct.head, expected, 2);
+    int sum = sumNodesWhile(list_struct.head);
+    bool sumOk = (sum == 5);
+    run_test("wrapper structure after first occurrence", structureOk);
+    run_test("wrapper sum after deletion", sumOk);
+    freeList(list_struct.head);
+}
+
+// Test 7: Delete single node using wrapper
+static void test_wrapperDeleteSingleNode(void) {
+    print_test_suite_header("Wrapper Delete Single Node");
+    struct list list_struct;
+    list_struct.head = prependNode(5, NULL);
+    deleteFirstInstanceWrapper(&list_struct, 5);
+    bool structureOk = checkListStructure(list_struct.head, NULL, 0);
+    run_test("wrapper single node deleted", structureOk);
+    freeList(list_struct.head);
+}
+
+// -----------------------------------------------------------------------------
 // Run all tests
 // -----------------------------------------------------------------------------
 static void run_tests(void) {
@@ -278,6 +408,15 @@ static void run_tests(void) {
     test_deleteNonExistent();
     test_deleteFirstOccurrence();
     test_deleteSingleNode();
+
+    // Wrapper delete function tests
+    test_wrapperDeleteFromEmptyList();
+    test_wrapperDeleteHead();
+    test_wrapperDeleteMiddle();
+    test_wrapperDeleteLast();
+    test_wrapperDeleteNonExistent();
+    test_wrapperDeleteFirstOccurrence();
+    test_wrapperDeleteSingleNode();
 }
 
 int main(void) {
@@ -371,4 +510,8 @@ struct node *deleteFirstInstance(struct node *list, int value) {
         curr = curr->next;
     }
     return list;
+}
+
+void deleteFirstInstanceWrapper(struct list *list, int value) {
+    list->head = deleteFirstInstance(list->head, value);
 }
