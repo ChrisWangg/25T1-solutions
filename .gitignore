@@ -1,0 +1,4 @@
+# Ignore all files without extensions in all subfolders (executables)
+**/*
+!**/Makefile
+!**/*.*
