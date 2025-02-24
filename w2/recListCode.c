@@ -436,15 +436,13 @@ static void run_tests(void) {
 
 // Recursively compute the length of a linked list
 int listLength(struct node *l) {
-    if (l == NULL)
-        return 0;
+    if (l == NULL) return 0;
     return 1 + listLength(l->next);
 }
 
 // Recursively count the number of odd numbers in a linked list
 int listCountOdds(struct node *l) {
-    if (l == NULL)
-        return 0;
+    if (l == NULL) return 0;
     if (l->value % 2 == 1) return 1 + listCountOdds(l->next);
     return listCountOdds(l->next);
 }
@@ -453,16 +451,13 @@ int listCountOdds(struct node *l) {
 bool listIsSorted(struct node *l) {
     if (l == NULL || l->next == NULL)
         return true;
-    if (l->value <= l->next->value)
-        return listIsSorted(l->next);
-    else
-        return false;
+    if (l->value > l->next->value) return false;
+    return true;
 }
 
 // Recursively delete the first instance of a value from the list
 struct node *listDelete(struct node *l, int value) {
-    if (l == NULL)
-        return NULL;
+    if (l == NULL) return NULL;
     if (l->value == value) {
         struct node *nextNode = l->next;
         free(l);
