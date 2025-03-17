@@ -28,57 +28,57 @@ static void freeList(struct node *head);
 
 
 int main() {
-	struct node *head = NULL;
-	head = appendList(head, 1);
-	head = appendList(head, 2);
-	head = appendList(head, 3);
-	head = appendList(head, 4);
-	printList(head);
-	freeList(head);
-	return 0;
+    struct node *head = NULL;
+    head = appendList(head, 1);
+    head = appendList(head, 2);
+    head = appendList(head, 3);
+    head = appendList(head, 4);
+    printList(head);
+    freeList(head);
+    return 0;
 }
 
 /** 
  * Function that creates a node and appends it to the end of a linked list
 */
 static struct node *appendList(struct node *list, int data) {
-	struct node *newNode = malloc(sizeof(struct node));
-	newNode->data = data;
-	newNode->next = NULL;
-	if (list == NULL) {
-		list = newNode;
-	} else {
-		struct node *lastNode = list;
-		while (lastNode->next != NULL) {
-			lastNode = lastNode->next;
-		}
-		lastNode->next = newNode;
-	}
-	return list;
+    struct node *newNode = malloc(sizeof(struct node));
+    newNode->data = data;
+    newNode->next = NULL;
+    if (list == NULL) {
+        list = newNode;
+    } else {
+        struct node *lastNode = list;
+        while (lastNode->next != NULL) {
+            lastNode = lastNode->next;
+        }
+        lastNode->next = newNode;
+    }
+    return list;
 }
 
 /**
  * Function that prints a linked list
  */
 static void printList(struct node *node) {
-	while (node->next != NULL) {
-		printf("%d -> ", node->data);
-		node = node->next;
-	}
-	printf("%d\n", node->data);
+    while (node->next != NULL) {
+        printf("%d -> ", node->data);
+        node = node->next;
+    }
+    printf("%d\n", node->data);
 }
 
 /**
  * Function that free's memory of a linked list
  */
 static void freeList(struct node *head) {
-	if (head == NULL) {
-		return;
-	}
-	struct node *temp = head;
-	while (head != NULL) {
-		temp = head;
-		head = head->next;
-		free(temp);
-	}
+    if (head == NULL) {
+        return;
+    }
+    struct node *temp = head;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
 }
